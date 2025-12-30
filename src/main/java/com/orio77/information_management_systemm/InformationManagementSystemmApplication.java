@@ -1,5 +1,8 @@
 package com.orio77.information_management_systemm;
 
+import java.util.List;
+
+import org.apache.pdfbox.pdmodel.PDDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -37,11 +40,8 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 	public void run(String... args) throws Exception {
 		System.out.println("Information Management System is running...");
 
-		// 0. Config
-		String source = "defaultSource";
-
 		// 1. Load data
-		String data = dataHandlingService.loadData(source);
+		List<PDDocument> data = dataHandlingService.loadData();
 		
 		// 2. Extract information
 		String extractedInfo = informationExtractionService.extractInformation(data);
