@@ -1,0 +1,5 @@
+spring.application.name=information-management-systemm
+
+spring.ai.google.genai.api-key=your-api-key-here
+spring.ai.google.genai.chat.options.include-thoughts=true
+spring.ai.google.genai.chat.options.model=gemini-3-flash-preview

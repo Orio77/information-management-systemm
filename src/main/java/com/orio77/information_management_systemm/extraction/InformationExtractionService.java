@@ -6,5 +6,5 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 public interface InformationExtractionService {
     
-    public String extractInformation(List<PDDocument> data);
+    public List<String> extractInformation(List<PDDocument> data);
 }

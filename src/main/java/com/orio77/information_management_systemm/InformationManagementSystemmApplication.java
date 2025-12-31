@@ -9,6 +9,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.orio77.information_management_systemm.extraction.InformationExtractionService;
+import com.orio77.information_management_systemm.formatting.DataFormattingService;
 import com.orio77.information_management_systemm.loading.DataHandlingService;
 import com.orio77.information_management_systemm.ordering.InformationOrderingService;
 import com.orio77.information_management_systemm.persistence.InformationPersistenceService;
@@ -19,6 +20,9 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 
 	@Autowired
 	private DataHandlingService dataHandlingService;
+
+	@Autowired
+	private DataFormattingService dataFormattingService;
 
 	@Autowired
 	private InformationExtractionService informationExtractionService;
@@ -41,18 +45,21 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 		System.out.println("Information Management System is running...");
 
 		// 1. Load data
-		List<PDDocument> data = dataHandlingService.loadData();
+		List<PDDocument> data = List.of(dataHandlingService.loadFile());
 		
-		// 2. Extract information
-		String extractedInfo = informationExtractionService.extractInformation(data);
+		// 2. Format data
+		List<PDDocument> formattedData = dataFormattingService.formatData(data);
+
+		// 3. Extract information
+		List<String> extractedInfo = informationExtractionService.extractInformation(formattedData);
 		
-		// 3. Process information
+		// 4. Process information
 		String processedInfo = informationProcessingService.processInformation(extractedInfo);
 		
-		// 4. Order information
+		// 5. Order information
 		String orderedInfo = informationOrderingService.orderInformation(processedInfo);
 		
-		// 5. Persist information
+		// 6. Persist information
 		informationPersistenceService.persistInformation(orderedInfo);
 	}
 

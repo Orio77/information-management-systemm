@@ -21,6 +21,30 @@ public class DataHandlingServiceImpl implements DataHandlingService {
     private final static String dataPath = "src/main/resources/data/";
 
     @Override
+    public PDDocument loadFile() {
+        log.info("Loading data from file: {}", filePath);
+
+        try {
+            // Load PDF document
+            PDDocument doc = Loader.loadPDF(new File(filePath));
+
+            // Log information about the loaded PDF
+            int numberOfPages = doc.getNumberOfPages();
+            log.info("PDF loaded successfully with {} pages.", numberOfPages);
+            log.info("PDF Title: {}", doc.getDocumentInformation().getTitle());
+            log.info("PDF Author: {}", doc.getDocumentInformation().getAuthor());
+
+            // Return the loaded document
+            return doc;
+        } catch (IOException e) {
+            // Log error if loading fails
+            log.error("Error loading PDF file: {}", e.getMessage());
+            // Rethrow as a runtime exception
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public List<PDDocument> loadData() {
         // Implementation for loading data from the specified source
         log.info("Loading data from source: {}", dataPath);
@@ -49,30 +73,4 @@ public class DataHandlingServiceImpl implements DataHandlingService {
         // Return the list of loaded documents
         return documents;
     }
-
-    @Override
-    public PDDocument loadFile() {
-        log.info("Loading data from file: {}", filePath);
-
-        try {
-            // Load PDF document
-            PDDocument doc = Loader.loadPDF(new File(filePath));
-
-            // Log information about the loaded PDF
-            int numberOfPages = doc.getNumberOfPages();
-            log.info("PDF loaded successfully with {} pages.", numberOfPages);
-            log.info("PDF Title: {}", doc.getDocumentInformation().getTitle());
-            log.info("PDF Author: {}", doc.getDocumentInformation().getAuthor());
-
-            // Return the loaded document
-            return doc;
-        } catch (IOException e) {
-            // Log error if loading fails
-            log.error("Error loading PDF file: {}", e.getMessage());
-            // Rethrow as a runtime exception
-            throw new RuntimeException(e);
-        }
-
-    }
-    
 }
