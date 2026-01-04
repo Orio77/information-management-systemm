@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class DataFormattingServiceImpl implements DataFormattingService {
-    
+
     @Override
     public PDDocument formatData(PDDocument data) {
         log.info("Formatting data: {}", data.getDocumentId());

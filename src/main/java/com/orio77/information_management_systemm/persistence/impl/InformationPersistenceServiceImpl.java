@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class InformationPersistenceServiceImpl implements InformationPersistenceService {
-    
+
     @Override
     public String persistInformation(String information) {
         // Implementation for persisting the provided information

@@ -5,7 +5,7 @@ import java.util.List;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 public interface DataHandlingService {
-    
+
     public List<PDDocument> loadData();
 
     public PDDocument loadFile();

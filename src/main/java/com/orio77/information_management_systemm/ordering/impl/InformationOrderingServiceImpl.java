@@ -9,11 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 public class InformationOrderingServiceImpl implements InformationOrderingService {
-    
+
     @Override
-    public String orderInformation(String information) {
+    public String orderInformation() {
         // Implementation for ordering the provided information
-        log.info("Ordering information: {}", information);
-        return "Ordered information: " + information;
+        log.info("Ordering information");
+        return "Ordered information";
     }
 }

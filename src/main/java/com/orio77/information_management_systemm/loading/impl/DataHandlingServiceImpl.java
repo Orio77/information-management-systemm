@@ -55,19 +55,18 @@ public class DataHandlingServiceImpl implements DataHandlingService {
         File[] files = dataDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
 
         // Load each PDF file into a PDDocument and collect them into a list
-        List<PDDocument> documents = files != null ? 
-            java.util.Arrays.stream(files).map(file -> {
-                try {
-                    PDDocument doc = Loader.loadPDF(file);
-                    log.info("Loaded PDF: {} with {} pages.", file.getName(), doc.getNumberOfPages());
-                    return doc;
-                } catch (IOException e) {
-                    log.error("Error loading PDF file {}: {}", file.getName(), e.getMessage());
-                    return null;
-                }
-            }).filter(doc -> doc != null).toList() 
+        List<PDDocument> documents = files != null ? java.util.Arrays.stream(files).map(file -> {
+            try {
+                PDDocument doc = Loader.loadPDF(file);
+                log.info("Loaded PDF: {} with {} pages.", file.getName(), doc.getNumberOfPages());
+                return doc;
+            } catch (IOException e) {
+                log.error("Error loading PDF file {}: {}", file.getName(), e.getMessage());
+                return null;
+            }
+        }).filter(doc -> doc != null).toList()
                 : List.of();
-            
+
         log.info("Total PDFs loaded: {}", documents.size());
 
         // Return the list of loaded documents
