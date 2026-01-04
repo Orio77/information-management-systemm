@@ -2,7 +2,7 @@ package com.orio77.information_management_systemm;
 
 import java.util.List;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -45,20 +45,22 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 		System.out.println("Information Management System is running...");
 
 		// 1. Load data
-		List<PDDocument> data = List.of(dataHandlingService.loadFile());
-		
+		List<String> data = List.of(dataHandlingService.loadFile());
+
 		// 2. Format data
-		List<PDDocument> formattedData = dataFormattingService.formatData(data);
+		List<String> formattedData = dataFormattingService.formatData(data);
 
 		// 3. Extract information
-		List<String> extractedInfo = informationExtractionService.extractInformation(formattedData);
-		
+		List<List<Generation>> extractedInfo = informationExtractionService.extractInformation(formattedData);
+
+		// TODO Implement response extraction
+
 		// 4. Process information
-		String processedInfo = informationProcessingService.processInformation(extractedInfo);
-		
+		String processedInfo = informationProcessingService.processInformation(List.of());
+
 		// 5. Order information
 		String orderedInfo = informationOrderingService.orderInformation(processedInfo);
-		
+
 		// 6. Persist information
 		informationPersistenceService.persistInformation(orderedInfo);
 	}

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
 
 import com.orio77.information_management_systemm.loading.DataHandlingService;
@@ -21,7 +22,7 @@ public class DataHandlingServiceImpl implements DataHandlingService {
     private final static String dataPath = "src/main/resources/data/";
 
     @Override
-    public PDDocument loadFile() {
+    public String loadFile() {
         log.info("Loading data from file: {}", filePath);
 
         try {
@@ -35,7 +36,8 @@ public class DataHandlingServiceImpl implements DataHandlingService {
             log.info("PDF Author: {}", doc.getDocumentInformation().getAuthor());
 
             // Return the loaded document
-            return doc;
+            PDFTextStripper stripper = new PDFTextStripper();
+            return stripper.getText(doc);
         } catch (IOException e) {
             // Log error if loading fails
             log.error("Error loading PDF file: {}", e.getMessage());
@@ -45,7 +47,7 @@ public class DataHandlingServiceImpl implements DataHandlingService {
     }
 
     @Override
-    public List<PDDocument> loadData() {
+    public List<String> loadData() {
         // Implementation for loading data from the specified source
         log.info("Loading data from source: {}", dataPath);
 
@@ -53,21 +55,22 @@ public class DataHandlingServiceImpl implements DataHandlingService {
         File dataDir = new File(dataPath);
         // List all PDF files in the directory
         File[] files = dataDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
+        // Initialize PDFTextStripper for text extraction
+        PDFTextStripper stripper = new PDFTextStripper();
 
         // Load each PDF file into a PDDocument and collect them into a list
-        List<PDDocument> documents = files != null ? 
-            java.util.Arrays.stream(files).map(file -> {
-                try {
-                    PDDocument doc = Loader.loadPDF(file);
-                    log.info("Loaded PDF: {} with {} pages.", file.getName(), doc.getNumberOfPages());
-                    return doc;
-                } catch (IOException e) {
-                    log.error("Error loading PDF file {}: {}", file.getName(), e.getMessage());
-                    return null;
-                }
-            }).filter(doc -> doc != null).toList() 
+        List<String> documents = files != null ? java.util.Arrays.stream(files).map(file -> {
+            try {
+                PDDocument doc = Loader.loadPDF(file);
+                log.info("Loaded PDF: {} with {} pages.", file.getName(), doc.getNumberOfPages());
+                return stripper.getText(doc);
+            } catch (IOException e) {
+                log.error("Error loading PDF file {}: {}", file.getName(), e.getMessage());
+                return null;
+            }
+        }).filter(doc -> doc != null).toList()
                 : List.of();
-            
+
         log.info("Total PDFs loaded: {}", documents.size());
 
         // Return the list of loaded documents
