@@ -1,0 +1,31 @@
+[
+    {
+  "step_by_step_reasoning": [
+    {
+      "step": 1,
+      "description": "Identify where the concept appears or is alluded to in the text.",
+      "evidence": "The author introduces the 'dominance hierarchy' early on by comparing human behavior to that of lobsters and songbirds. He explicitly defines it as a 'near-eternal aspect of the environment' and a 'master control system' located in the 'exceptionally ancient and fundamental' part of the brain that regulates neurochemistry (serotonin)."
+    },
+    {
+      "step": 2,
+      "description": "Look for the 'premises'—the sentences that act as setup or justification.",
+      "evidence": [
+        "Lobsters are 350 million years old and have been using these status-tracking systems since before dinosaurs existed.",
+        "Evolution is conservative; it builds on ancient foundations rather than replacing them.",
+        "Serotonin levels in both lobsters and humans fluctuate based on winning or losing social/territorial conflicts.",
+        "Status determines access to resources (food, mates, shelter) and physical health (stress levels, immune function)."
+      ]
+    },
+    {
+      "step": 3,
+      "description": "Look for 'connectors'—words like 'because,' 'therefore,' or illustrative examples.",
+      "evidence": [
+        "The author uses the lobster's serotonin response to Prozac as a connector to prove evolutionary continuity ('Prozac even cheers up lobsters').",
+        "He uses the phrase 'This means that dominance hierarchies have been an essentially permanent feature' to connect the age of the species to the validity of the hierarchy.",
+        "He uses the 'Matthew Principle' as an example of how these hierarchies naturally result in unequal distribution across all systems."
+      ]
+    }
+  ],
+  "final_explanation": "The author argues this because dominance hierarchies are not modern cultural inventions like capitalism or the patriarchy, but are instead a fundamental, biological reality that has existed for over 350 million years. By tracing the neurochemical similarities between humans and ancient crustaceans—specifically the role of serotonin in regulating posture and confidence—the author posits that our brains possess an 'unspeakably primordial calculator' that monitors our social standing. He concludes that because this system is so deeply embedded in our physiology, our perceived rank in the world isn't just a social metric but a biological master switch that dictates our psychological resilience, physical health, and overall susceptibility to the 'slings and arrows' of life. Therefore, maintaining a high social position is treated as a vital necessity for survival rather than a mere ego-driven pursuit."
+}
+]

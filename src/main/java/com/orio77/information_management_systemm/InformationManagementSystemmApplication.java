@@ -56,10 +56,11 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 		// TODO Implement response extraction
 
 		// 4. Process information
-		String processedInfo = informationProcessingService.processInformation(List.of());
+		List<List<Generation>> processedInfo = informationProcessingService.processInformation(List.of(),
+				formattedData.toString());
 
 		// 5. Order information
-		String orderedInfo = informationOrderingService.orderInformation(processedInfo);
+		String orderedInfo = informationOrderingService.orderInformation("");
 
 		// 6. Persist information
 		informationPersistenceService.persistInformation(orderedInfo);
