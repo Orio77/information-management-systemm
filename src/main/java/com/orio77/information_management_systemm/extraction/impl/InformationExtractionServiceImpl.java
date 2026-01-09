@@ -29,8 +29,8 @@ public class InformationExtractionServiceImpl implements InformationExtractionSe
                         """;
 
         private static final String EXTRACT_INFO_USER_MESSAGE = """
-                        Instructions: Extract core ideas from the text provided. Use the following \
-                        examples to understand the required depth and formatting.
+                        Instructions: Extract core ideas from the text provided and return as JSON. \
+                        Use the following examples to understand the required format.
 
                         Examples:
                         <example>
@@ -40,14 +40,20 @@ public class InformationExtractionServiceImpl implements InformationExtractionSe
                         achieve flow."
 
                         Output:
-                        • Concept: Switching Cost
-                        • Definition: The cognitive penalty incurred when shifting focus between tasks, \
-                        resulting in lowered efficiency and intelligence.
-                        • Actionable Takeaway: Practice single-tasking to induce flow states rather \
-                        than multitasking.
+                        {
+                          "concepts": [
+                            {
+                              "concept": "Switching Cost",
+                              "definition": "The cognitive penalty incurred when shifting focus between tasks, \
+                              resulting in lowered efficiency and intelligence.",
+                              "actionable_takeaway": "Practice single-tasking to induce flow states rather \
+                              than multitasking."
+                            }
+                          ]
+                        }
                         </example>
 
-                        Task: Extract the core ideas from the text below following the pattern above.
+                        Task: Extract the core ideas from the text below and return valid JSON following the pattern above.
 
                         Input Text:
                         <input>
@@ -62,15 +68,30 @@ public class InformationExtractionServiceImpl implements InformationExtractionSe
 
                 // Process each data item to extract information using the chat model
                 List<List<Generation>> results = data.stream()
-                                .peek((text) -> log.info("Extracting information out of the following text: {}",
-                                                text.substring(0, Math.min(text.length(), 100))))
-                                .map(this::buildExtractionPrompt).map(chatModel::call)
-                                .peek(response -> AIUtil.logResponse(response, log))
-                                .map(ChatResponse::getResults).toList();
+                                .map(this::extractInformation).toList();
 
                 log.info("Successfully extracted information from {} documents", results.size());
 
                 return results;
+        }
+
+        @Override
+        public List<Generation> extractInformation(String data) {
+                // log the input data (truncated for brevity)
+                log.info("Extracting information out of the following text: {}",
+                                data.substring(0, Math.min(data.length(), 100)));
+
+                // Build the extraction prompt
+                Prompt extractionPrompt = buildExtractionPrompt(data);
+
+                // Call the chat model with the prompt
+                ChatResponse response = chatModel.call(extractionPrompt);
+
+                // Log the response for debugging
+                AIUtil.logResponse(response, log);
+
+                // Return the generations from the response
+                return response.getResults();
         }
 
         private Prompt buildExtractionPrompt(String text) {

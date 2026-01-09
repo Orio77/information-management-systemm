@@ -37,7 +37,7 @@ public class InformationProcessingServiceImpl implements InformationProcessingSe
             Inputs: <concept> #### 3. Price’s Law: The Non-Linearity of Success
             In many systems, the square root of the total number of people in a domain does 50%% of the work. If you have 10 employees, 3 do half the work. If you have 10,000, 100 do half the work. This is a "Winner-Take-All" distribution.
             *   **The Lesson:** Success is non-linear. Once you start winning, the "Matthew Principle" takes over: "To those who have everything, more will be given." Small advantages at the beginning of a cycle (like a slightly better posture or a small win) compound into massive differences over time. Conversely, failures also compound. </concept>
-            Output: Please provide your Step-by-Step reasoning first, followed by the Final Explanation. Use JSON format.
+            Output: Please provide your Step-by-Step reasoning first, followed by the Final Explanation. Use JSON format with 'step_by_step_reasoning' and 'final_explanation' nodes.
             Concept: %s
             Original_Text: %s
                         """;
@@ -58,6 +58,24 @@ public class InformationProcessingServiceImpl implements InformationProcessingSe
         return Prompt.builder().messages(List.of(
                 SystemMessage.builder().text(PROCESS_INFO_SYSTEM_MESSAGE).build(),
                 UserMessage.builder().text(userMessage).build())).build();
+    }
+
+    @Override
+    public List<Generation> processInformation(String information, String sourceContent) {
+        log.debug("Processing single piece of information: {}",
+                information.substring(0, Math.min(information.length(), 100)));
+
+        // Build the extraction prompt
+        Prompt extractionPrompt = buildExtractionPrompt(information, sourceContent);
+
+        // Call the chat model with the prompt
+        ChatResponse response = chatModel.call(extractionPrompt);
+
+        // Log the response for debugging
+        AIUtil.logResponse(response, log);
+
+        // Return the generations from the response
+        return response.getResults();
     }
 
 }
