@@ -12,11 +12,10 @@ public class DataHandlingServiceTest {
 
     @Test
     public void testLoadFile() {
-        String file = dataHandlingService.loadFile();
+        var file = dataHandlingService.loadFile();
         // Assert that the file is loaded
         assert (file != null);
-        // Assert that the file has pages
-        assert (file.isBlank() == false);
+        assert !(file.getContent().strip().isBlank());
     }
 
     @Test

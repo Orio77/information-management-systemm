@@ -9,13 +9,16 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.orio77.information_management_systemm.extraction.Idea;
+import com.orio77.information_management_systemm.extraction.IdeaRepository;
 import com.orio77.information_management_systemm.extraction.InformationExtractionService;
 import com.orio77.information_management_systemm.extraction.impl.IdeaFactoryService;
 import com.orio77.information_management_systemm.formatting.DataFormattingService;
 import com.orio77.information_management_systemm.loading.DataHandlingService;
+import com.orio77.information_management_systemm.loading.FileData;
+import com.orio77.information_management_systemm.loading.FileDataRepository;
 import com.orio77.information_management_systemm.ordering.InformationOrderingService;
-import com.orio77.information_management_systemm.persistence.InformationPersistenceService;
 import com.orio77.information_management_systemm.processing.Explanation;
+import com.orio77.information_management_systemm.processing.ExplanationRepository;
 import com.orio77.information_management_systemm.processing.InformationProcessingService;
 import com.orio77.information_management_systemm.processing.impl.ExplanationFactoryService;
 
@@ -24,6 +27,9 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 
 	@Autowired
 	private DataHandlingService dataHandlingService;
+
+	@Autowired
+	private FileDataRepository fileDataRepo;
 
 	@Autowired
 	private DataFormattingService dataFormattingService;
@@ -35,13 +41,16 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 	private IdeaFactoryService ideaFactoryService;
 
 	@Autowired
+	private IdeaRepository ideaRepo;
+
+	@Autowired
 	private InformationProcessingService informationProcessingService;
 
 	@Autowired
 	private ExplanationFactoryService explanationFactoryService;
 
 	@Autowired
-	private InformationPersistenceService informationPersistenceService;
+	private ExplanationRepository explanationRepo;
 
 	@Autowired
 	private InformationOrderingService informationOrderingService;
@@ -52,33 +61,50 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println("Information Management System is running...");
 
 		// 1. Load data
-		String data = dataHandlingService.loadFile();
+		FileData data = dataHandlingService.loadFile();
 
-		// 2. Format data
-		data = dataFormattingService.formatData(data);
+		boolean isProcessed = fileDataRepo.existsByTitle(data.getTitle());
 
-		// 3. Extract information
-		List<Generation> extractedInfo = informationExtractionService.extractInformation(data);
+		if (!isProcessed) {
+			data = fileDataRepo.save(data);
 
-		// Extract Response
-		List<Idea> ideas = ideaFactoryService.createIdeasFromGenerations(extractedInfo, 1L);
+			// 2. Format data
+			String formattedData = dataFormattingService.formatData(data.getContent());
 
-		// 4. Process information
-		List<Generation> processedInfo = informationProcessingService.processInformation(
-				ideas.get(0).getContent(),
-				data);
+			// 3. Extract information
+			List<Generation> extractedInfo = informationExtractionService.extractInformation(formattedData);
 
-		List<Explanation> explanations = explanationFactoryService.createExplanationsFromGenerations(processedInfo,
-				ideas.get(0).getId());
+			// Extract Response
+			List<Idea> ideas = ideaFactoryService.createIdeasFromGenerations(extractedInfo, data.getId());
 
-		// 5. Order information
-		String orderedInfo = informationOrderingService.orderInformation("");
+			ideas = ideaRepo.saveAll(ideas);
+			System.out.println("IDea:");
+			System.out.println(ideas.getFirst());
 
-		// 6. Persist information
-		informationPersistenceService.persistInformation(orderedInfo);
+			for (Idea idea : ideas) {
+				// 4. Process information
+				List<Generation> processedInfo = informationProcessingService.processInformation(
+						idea.getContent(),
+						formattedData);
+
+				List<Explanation> explanations = explanationFactoryService.createExplanationsFromGenerations(
+						processedInfo,
+						idea.getId());
+
+				explanations = explanationRepo.saveAll(explanations);
+			}
+
+			System.out.println(ideaRepo.findAll());
+			System.out.println(explanationRepo.findAll());
+
+			// 5. Order information
+			String orderedInfo = informationOrderingService.orderInformation("");
+		} else {
+			System.out.println("Processed, not processing");
+		}
+
 	}
 
 }

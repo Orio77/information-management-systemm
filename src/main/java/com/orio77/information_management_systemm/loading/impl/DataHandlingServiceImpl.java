@@ -10,6 +10,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
 
 import com.orio77.information_management_systemm.loading.DataHandlingService;
+import com.orio77.information_management_systemm.loading.FileData;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,17 +18,18 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DataHandlingServiceImpl implements DataHandlingService {
 
-    private final static String filePath = "src/main/resources/data/12-Rules-for-Life-23-38.pdf";
+    private final static String filePath = "src/main/resources/data/12-Rules-for-Life-74-88.pdf";
 
     private final static String dataPath = "src/main/resources/data/";
 
     @Override
-    public String loadFile() {
+    public FileData loadFile() {
         log.info("Loading data from file: {}", filePath);
 
         try {
+            File file = new File(filePath);
             // Load PDF document
-            PDDocument doc = Loader.loadPDF(new File(filePath));
+            PDDocument doc = Loader.loadPDF(file);
 
             // Log information about the loaded PDF
             int numberOfPages = doc.getNumberOfPages();
@@ -37,7 +39,48 @@ public class DataHandlingServiceImpl implements DataHandlingService {
 
             // Return the loaded document
             PDFTextStripper stripper = new PDFTextStripper();
-            return stripper.getText(doc);
+
+            String content = stripper.getText(doc);
+            String title = (doc.getDocumentInformation().getTitle() == null
+                    || doc.getDocumentInformation().getTitle().strip().isBlank()) ? file.getName()
+                            : doc.getDocumentInformation()
+                                    .getTitle();
+
+            return new FileData(title, content);
+
+        } catch (IOException e) {
+            // Log error if loading fails
+            log.error("Error loading PDF file: {}", e.getMessage());
+            // Rethrow as a runtime exception
+            throw new RuntimeException(e);
+        }
+    }
+
+    public FileData loadFile(String filePath) {
+        log.info("Loading data from file: {}", filePath);
+
+        try {
+            File file = new File(filePath);
+            // Load PDF document
+            PDDocument doc = Loader.loadPDF(file);
+
+            // Log information about the loaded PDF
+            int numberOfPages = doc.getNumberOfPages();
+            log.info("PDF loaded successfully with {} pages.", numberOfPages);
+            log.info("PDF Title: {}", doc.getDocumentInformation().getTitle());
+            log.info("PDF Author: {}", doc.getDocumentInformation().getAuthor());
+
+            // Return the loaded document
+            PDFTextStripper stripper = new PDFTextStripper();
+
+            String content = stripper.getText(doc);
+            String title = (doc.getDocumentInformation().getTitle() == null
+                    || doc.getDocumentInformation().getTitle().strip().isBlank()) ? file.getName()
+                            : doc.getDocumentInformation()
+                                    .getTitle();
+
+            return new FileData(title, content);
+
         } catch (IOException e) {
             // Log error if loading fails
             log.error("Error loading PDF file: {}", e.getMessage());
@@ -47,7 +90,7 @@ public class DataHandlingServiceImpl implements DataHandlingService {
     }
 
     @Override
-    public List<String> loadData() {
+    public List<FileData> loadData() {
         // Implementation for loading data from the specified source
         log.info("Loading data from source: {}", dataPath);
 
@@ -55,21 +98,10 @@ public class DataHandlingServiceImpl implements DataHandlingService {
         File dataDir = new File(dataPath);
         // List all PDF files in the directory
         File[] files = dataDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".pdf"));
-        // Initialize PDFTextStripper for text extraction
-        PDFTextStripper stripper = new PDFTextStripper();
 
         // Load each PDF file into a PDDocument and collect them into a list
-        List<String> documents = files != null ? java.util.Arrays.stream(files).map(file -> {
-            try {
-                PDDocument doc = Loader.loadPDF(file);
-                log.info("Loaded PDF: {} with {} pages.", file.getName(), doc.getNumberOfPages());
-                return stripper.getText(doc);
-            } catch (IOException e) {
-                log.error("Error loading PDF file {}: {}", file.getName(), e.getMessage());
-                return null;
-            }
-        }).filter(doc -> doc != null).toList()
-                : List.of();
+        List<FileData> documents = java.util.Arrays.stream(files).map(File::getAbsolutePath).map(this::loadFile)
+                .filter(doc -> doc != null).toList();
 
         log.info("Total PDFs loaded: {}", documents.size());
 

@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface DataHandlingService {
 
-    public List<String> loadData();
+    public List<FileData> loadData();
 
-    public String loadFile();
+    public FileData loadFile();
 }
