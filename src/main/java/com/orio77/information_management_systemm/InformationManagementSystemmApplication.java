@@ -16,6 +16,8 @@ import com.orio77.information_management_systemm.formatting.DataFormattingServic
 import com.orio77.information_management_systemm.loading.DataHandlingService;
 import com.orio77.information_management_systemm.loading.FileData;
 import com.orio77.information_management_systemm.loading.FileDataRepository;
+import com.orio77.information_management_systemm.ordering.IdeaPrerequisite;
+import com.orio77.information_management_systemm.ordering.IdeaPrerequisiteRepository;
 import com.orio77.information_management_systemm.ordering.InformationOrderingService;
 import com.orio77.information_management_systemm.processing.Explanation;
 import com.orio77.information_management_systemm.processing.ExplanationRepository;
@@ -54,6 +56,9 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 
 	@Autowired
 	private InformationOrderingService informationOrderingService;
+
+	@Autowired
+	private IdeaPrerequisiteRepository ideaPrerequisiteRepo;
 
 	public static void main(String[] args) {
 		SpringApplication.run(InformationManagementSystemmApplication.class, args);
@@ -100,7 +105,9 @@ public class InformationManagementSystemmApplication implements CommandLineRunne
 			System.out.println(explanationRepo.findAll());
 
 			// 5. Order information
-			String orderedInfo = informationOrderingService.orderInformation("");
+			List<IdeaPrerequisite> orderedInfo = informationOrderingService.orderInformation(ideas);
+
+			ideaPrerequisiteRepo.saveAll(orderedInfo);
 		} else {
 			System.out.println("Processed, not processing");
 		}
