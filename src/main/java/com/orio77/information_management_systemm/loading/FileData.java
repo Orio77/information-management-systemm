@@ -18,10 +18,11 @@ public class FileData {
     private String title;
     @Column(columnDefinition = "TEXT")
     private String content;
+    private Integer numPages;
 
-    public FileData(String title, String content) {
+    public FileData(String title, String content, Integer numPages) {
         this.title = title;
         this.content = content;
+        this.numPages = numPages;
     }
-
 }

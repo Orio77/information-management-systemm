@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orio77.information_management_systemm.core.util.AIUtil;
 import com.orio77.information_management_systemm.extraction.Idea;
-import com.orio77.information_management_systemm.util.AIUtil;
 
 import lombok.extern.slf4j.Slf4j;
 

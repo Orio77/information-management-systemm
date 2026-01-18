@@ -1,4 +1,4 @@
-package com.orio77.information_management_systemm.util;
+package com.orio77.information_management_systemm.core.util;
 
 import java.util.ArrayList;
 import java.util.List;

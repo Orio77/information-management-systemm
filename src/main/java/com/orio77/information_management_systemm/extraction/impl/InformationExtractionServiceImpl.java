@@ -10,8 +10,8 @@ import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.stereotype.Service;
 
+import com.orio77.information_management_systemm.core.util.AIUtil;
 import com.orio77.information_management_systemm.extraction.InformationExtractionService;
-import com.orio77.information_management_systemm.util.AIUtil;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

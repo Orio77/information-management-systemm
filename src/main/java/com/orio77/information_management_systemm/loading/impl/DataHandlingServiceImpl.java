@@ -8,6 +8,7 @@ import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.orio77.information_management_systemm.loading.DataHandlingService;
 import com.orio77.information_management_systemm.loading.FileData;
@@ -46,7 +47,7 @@ public class DataHandlingServiceImpl implements DataHandlingService {
                             : doc.getDocumentInformation()
                                     .getTitle();
 
-            return new FileData(title, content);
+            return new FileData(title, content, numberOfPages);
 
         } catch (IOException e) {
             // Log error if loading fails
@@ -56,6 +57,7 @@ public class DataHandlingServiceImpl implements DataHandlingService {
         }
     }
 
+    @Override
     public FileData loadFile(String filePath) {
         log.info("Loading data from file: {}", filePath);
 
@@ -79,7 +81,40 @@ public class DataHandlingServiceImpl implements DataHandlingService {
                             : doc.getDocumentInformation()
                                     .getTitle();
 
-            return new FileData(title, content);
+            return new FileData(title, content, numberOfPages);
+
+        } catch (IOException e) {
+            // Log error if loading fails
+            log.error("Error loading PDF file: {}", e.getMessage());
+            // Rethrow as a runtime exception
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public FileData loadFile(MultipartFile file) {
+        log.info("Loading data from file: {}", file.getOriginalFilename());
+
+        try {
+            // Load PDF document
+            PDDocument doc = Loader.loadPDF(file.getBytes());
+
+            // Log information about the loaded PDF
+            int numberOfPages = doc.getNumberOfPages();
+            log.info("PDF loaded successfully with {} pages.", numberOfPages);
+            log.info("PDF Title: {}", doc.getDocumentInformation().getTitle());
+            log.info("PDF Author: {}", doc.getDocumentInformation().getAuthor());
+
+            // Return the loaded document
+            PDFTextStripper stripper = new PDFTextStripper();
+
+            String content = stripper.getText(doc);
+            String title = (doc.getDocumentInformation().getTitle() == null
+                    || doc.getDocumentInformation().getTitle().strip().isBlank()) ? file.getOriginalFilename()
+                            : doc.getDocumentInformation()
+                                    .getTitle();
+
+            return new FileData(title, content, numberOfPages);
 
         } catch (IOException e) {
             // Log error if loading fails
