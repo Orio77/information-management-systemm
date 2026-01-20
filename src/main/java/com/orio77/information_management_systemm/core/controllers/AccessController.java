@@ -16,6 +16,8 @@ import com.orio77.information_management_systemm.loading.FileDataRepository;
 import com.orio77.information_management_systemm.loading.impl.DataHandlingServiceImpl;
 import com.orio77.information_management_systemm.ordering.IdeaPrerequisite;
 import com.orio77.information_management_systemm.ordering.IdeaPrerequisiteRepository;
+import com.orio77.information_management_systemm.processing.Explanation;
+import com.orio77.information_management_systemm.processing.ExplanationRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +34,8 @@ public class AccessController {
 
     private final IdeaPrerequisiteRepository ideaPrerequisiteRepo;
 
+    private final ExplanationRepository explanationRepo;
+
     private final FileDataRepository fileDataRepo;
 
     private final DataHandlingServiceImpl dataHandlingService;
@@ -43,9 +47,24 @@ public class AccessController {
         return ideaRepo.findAll();
     }
 
+    @GetMapping("/idea/{id}")
+    public Idea fetchIdeaById(@RequestParam Long id) {
+        return ideaRepo.getReferenceById(id);
+    }
+
     @GetMapping("/prerequisites")
     public List<IdeaPrerequisite> fetchAllIdeaPrerequisites() {
         return ideaPrerequisiteRepo.findAll();
+    }
+
+    @GetMapping("/explanation")
+    public List<Explanation> fetchAllExplanations() {
+        return explanationRepo.findAll();
+    }
+
+    @GetMapping("/explanation/{id}")
+    public Explanation fetchAllExplanations(@RequestParam Long ideaId) {
+        return explanationRepo.findByIdeaId(ideaId);
     }
 
     @GetMapping("/pdf/all")
