@@ -24,7 +24,7 @@
     </appender>
 
     <!-- Application-specific logger -->
-    <logger name="com.orio77.information_management_systemm" level="DEBUG"/>
+    <logger name="com.orio77.information_management_system" level="DEBUG"/>
     
     <!-- Root logger -->
     <root level="INFO">

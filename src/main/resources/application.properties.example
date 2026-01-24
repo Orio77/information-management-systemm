@@ -1,4 +1,4 @@
-spring.application.name=information-management-systemm
+spring.application.name=information-management-system
 
 spring.ai.google.genai.api-key=your-api-key-here
 spring.ai.google.genai.chat.options.include-thoughts=true

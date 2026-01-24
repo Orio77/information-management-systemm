@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.orio77</groupId>
-	<artifactId>information-management-systemm</artifactId>
+	<artifactId>information-management-system</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>information-management-systemm</name>
+	<name>information-management-system</name>
 	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
